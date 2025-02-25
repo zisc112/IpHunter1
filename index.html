@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IP Address Viewer</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.replit.com/agent/bootstrap-agent-dark-theme.min.css" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="{{ url_for('static', filename='css/custom.css') }}" rel="stylesheet">
+</head>
+<body>
+    <div class="container min-vh-100 d-flex align-items-center justify-content-center">
+        <div class="text-center">
+            <div class="card shadow-lg">
+                <div class="card-body p-5">
+                    <h1 class="mb-4">Your IP Address</h1>
+                    <div class="ip-display mb-4">
+                        <i class="fas fa-network-wired fa-2x mb-3"></i>
+                        <div class="h4 mb-2">IPHUNTER</div>
+                        <div class="h3 ip-text">{{ ip_address }}</div>
+                    </div>
+
+                    <!-- USA Map Display -->
+                    <div class="map-container mb-4">
+                        <svg viewBox="0 0 800 500" class="usa-map">
+                            <image href="{{ url_for('static', filename='images/usa-map.png') }}" width="100%" height="100%" preserveAspectRatio="xMidYMid meet"/>
+                            <!-- Ping marker -->
+                            <circle id="location-ping" cx="-100" cy="-100" r="5" class="ping-marker" style="display: none"/>
+                        </svg>
+                    </div>
+
+                    <!-- Location Information -->
+                    <div class="location-display mb-4">
+                        <i class="fas fa-map-marker-alt fa-2x mb-3"></i>
+                        <div class="h3 location-text">
+                            {% if location.city and location.country %}
+                                {{ location.city }}, 
+                                {% if location.region %}{{ location.region }}, {% endif %}
+                                {{ location.country }}
+                            {% else %}
+                                Location information unavailable
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Device Information -->
+                    <div class="device-display mb-4">
+                        <i class="fas fa-laptop fa-2x mb-3"></i>
+                        <div class="h3 device-text">
+                            {{ device_info.os }} - {{ device_info.browser }}
+                            {% if device_info.mobile %}
+                                <div class="badge bg-info">Mobile Device</div>
+                            {% else %}
+                                <div class="badge bg-secondary">Desktop</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    {% if recent_visits %}
+                    <div class="mt-4">
+                        <h4>Recent Visits</h4>
+                        <div class="list-group">
+                            {% for visit in recent_visits %}
+                            <div class="list-group-item bg-dark-subtle">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <span class="ip-text">{{ visit.ip_address }}</span>
+                                        {% if visit.city and visit.country %}
+                                        <br>
+                                        <small class="text-muted">
+                                            {{ visit.city }}, {{ visit.country }}
+                                        </small>
+                                        {% endif %}
+                                    </div>
+                                    <small class="text-muted">{{ visit.visit_time.strftime('%Y-%m-%d %H:%M:%S') }}</small>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Map Coordinates -->
+    <script src="{{ url_for('static', filename='js/map-coordinates.js') }}"></script>
+    <!-- Custom JS -->
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
